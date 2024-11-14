@@ -40,3 +40,5 @@ if (currentIndex > sites.length - 1) {
 <template>
   <Index v-if="displayUI.index.value"></Index> 
 </template>
+
+

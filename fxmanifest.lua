@@ -26,7 +26,7 @@ ui_page({
 
 dependencies {(
 	'ox_lib',
-	'oxmysql'
+	'oxmysql',
 	'es_extended'
 )}
 
