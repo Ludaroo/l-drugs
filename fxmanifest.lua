@@ -2,8 +2,7 @@ fx_version("cerulean")
 game("gta5")
 lua54("yes")
 
-author("Ludaro")
-description("Ludaro Vue Boilerplate")
+author("Ludaro & Emma")
 version("1.0.0")
 
 client_scripts({
@@ -16,6 +15,7 @@ server_scripts({
 })
 
 shared_scripts({
+	"shared/*.lua",
 	"@ox_lib/init.lua",
 	"config/*.lua"
 })
@@ -23,12 +23,13 @@ shared_scripts({
 ui_page({
 	"html/dist/index.html",
 })
-dependencies {(
+
+dependencies {
 	'ox_lib',
-	'oxmysql'
+	'oxmysql',
 	'es_extended'
-)}
+}
+
 files({
 	"html/dist/**",
 })
-
