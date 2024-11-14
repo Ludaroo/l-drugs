@@ -1,0 +1,24 @@
+{
+    "drugManager": {
+      "title": "Drug Manager",
+      "close": "Close",
+      "menuDrugConfig": "Drug Configuration",
+      "drugConfigTitle": "Drug Configuration",
+      "drugName": "Drug Name",
+      "drugNamePlaceholder": "Enter drug name",
+      "healthImpact": "Health Impact",
+      "healthImpactPlaceholder": "Enter health impact",
+      "effectLevel": "Effect Level",
+      "effectLevelPlaceholder": "Enter effect level (0-100)",
+      "toleranceThreshold": "Tolerance Threshold",
+      "toleranceThresholdPlaceholder": "Enter tolerance threshold",
+      "addDrug": "Add Drug",
+      "existingDrugs": "Existing Drugs"
+    },
+    "language": {
+      "english": "English",
+      "german": "Deutsch",
+      "chinese": "简体中文"
+    }
+  }
+  

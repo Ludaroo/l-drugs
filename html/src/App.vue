@@ -8,8 +8,6 @@ let currentIndex = 0;
 
 const displayUI = {
   index: ref(false),
-  testite1: ref(false),
-  testsite2: ref(false)
 }
 const router = useRouter(); // Define the router instance correctly
 
@@ -38,7 +36,5 @@ if (currentIndex > sites.length - 1) {
 
 <!-- here we make the Index visible if displayUI.Index is == true -->
 <template>
-  <Index v-if="displayUI.index.value"></Index> 
+  <Index></Index> 
 </template>
-
-
