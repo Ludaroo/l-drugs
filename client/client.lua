@@ -1,4 +1,3 @@
--- command to open the NUI (show index)
 uishown = false
 RegisterCommand("showIndex", function(source, args, rawcommand)
     SetNuiFocus(not uishown, uishown)
