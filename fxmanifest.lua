@@ -6,8 +6,8 @@ author("Ludaro & Emma")
 version("1.0.0")
 
 client_scripts({
-	'client/init.lua'
-	"client/*.lua",
+	'client/init.lua',
+	"client/*.lua"
 })
 
 server_scripts({

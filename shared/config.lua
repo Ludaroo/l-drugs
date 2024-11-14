@@ -1,5 +1,5 @@
 Config = {}
-Config.Locale = "de"
+Config.Locale = "en"
 -- config.tick = 5000
 
 -- config.drugs = {
