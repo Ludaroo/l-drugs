@@ -25,19 +25,11 @@ ui_page({
 	"html/dist/index.html",
 })
 
-<<<<<<< HEAD
 dependencies {(
 	'ox_lib',
 	'oxmysql',
 	'es_extended'
 )}
-=======
-dependencies {
-	'ox_lib',
-	'oxmysql',
-	'es_extended'
-}
->>>>>>> e54a84f5e9a7543ce04dc1db41a18627b69238c2
 
 files({
 	'locales/*.json'
