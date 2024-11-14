@@ -1,8 +1,14 @@
-Drugs.drugged = {
-    Name = locale('drugged'),
-    Tick = 1000,
-    Max = 90000,
-    DefaultValue = 0,
-    onTick = function(player, effect)
+Effects['drugged'] = {
+    TickTime = 1000,
+    MaxDuration = 90000,
+    apply = function(player, params)
+       
+    end,
+    remove = function(player)
+
+    end,
+    tick = function(player, params)
+       
     end
 }
+

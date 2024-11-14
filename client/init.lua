@@ -1,4 +1,6 @@
-Drugs = {}
+-- effects.lua
+
+Effects = {}
 
 if (GetResourceState("es_extended") == "started") then
     Debug(3, "es_extended resource is started.")
