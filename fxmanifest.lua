@@ -6,40 +6,37 @@ author("Ludaro & Emma")
 version("1.0.0")
 
 client_scripts({
+<<<<<<< HEAD
 	'client/init.lua',
 	"client/*.lua"
+=======
+    "client/init.lua",
+    "client/*.lua"
+>>>>>>> 6738e8d3d45ebfd4600e9bb4a4da6191bda5437b
 })
 
 server_scripts({
-	"@oxmysql/lib/MySQL.lua",
-	"server/*.lua",
+    "@oxmysql/lib/MySQL.lua",
+    "server/*.lua"
 })
 
 shared_scripts({
-	"shared/*.lua",
-	"@ox_lib/init.lua",
-	"config/*.lua"
+    "shared/*.lua",
+    "@ox_lib/init.lua",
+    "config/*.lua"
 })
 
 ui_page({
-	"html/dist/index.html",
+    "html/dist/index.html",
 })
 
-<<<<<<< HEAD
-dependencies {(
-	'ox_lib',
-	'oxmysql',
-	'es_extended'
-)}
-=======
 dependencies {
-	'ox_lib',
-	'oxmysql',
-	'es_extended'
+    "ox_lib",
+    "oxmysql",
+    "es_extended"
 }
->>>>>>> e54a84f5e9a7543ce04dc1db41a18627b69238c2
 
 files({
-	'locales/*.json'
-	"html/dist/**",
+    "locales/*.json",
+    "html/dist/**"
 })
