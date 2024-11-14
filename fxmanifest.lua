@@ -6,6 +6,7 @@ author("Ludaro & Emma")
 version("1.0.0")
 
 client_scripts({
+	'client/init.lua'
 	"client/*.lua",
 })
 
@@ -39,5 +40,6 @@ dependencies {
 >>>>>>> e54a84f5e9a7543ce04dc1db41a18627b69238c2
 
 files({
+	'locales/*.json'
 	"html/dist/**",
 })
