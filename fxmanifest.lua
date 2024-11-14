@@ -23,7 +23,11 @@ shared_scripts({
 ui_page({
 	"html/dist/index.html",
 })
-
+dependencies {(
+	'ox_lib',
+	'oxmysql'
+	'es_extended'
+)}
 files({
 	"html/dist/**",
 })
