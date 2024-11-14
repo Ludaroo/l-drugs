@@ -1,18 +1,18 @@
 Drugs = {}
 
 if (GetResourceState("es_extended") == "started") then
-    Debug(3, "es_extended resource is started.")
+    -- Debug(3, "es_extended resource is started.")
 
     if (exports["es_extended"] and exports["es_extended"].getSharedObject) then
         ESX = exports["es_extended"]:getSharedObject()
-        Debug(2, "ESX shared object retrieved via exports.")
+        -- Debug(2, "ESX shared object retrieved via exports.")
     else
         TriggerEvent("esx:getSharedObject", function(obj)
             ESX = obj
-            Debug(2, "ESX shared object retrieved via event.")
+            -- Debug(2, "ESX shared object retrieved via event.")
         end)
     end
 end
 lib.locale()
 
-SetConvar("setr ox:locale", Config.Locale)
+-- SetConvar("setr ox:locale", Config.Locale)

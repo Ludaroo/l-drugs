@@ -6,13 +6,8 @@ author("Ludaro & Emma")
 version("1.0.0")
 
 client_scripts({
-<<<<<<< HEAD
 	'client/init.lua',
 	"client/*.lua"
-=======
-    "client/init.lua",
-    "client/*.lua"
->>>>>>> 6738e8d3d45ebfd4600e9bb4a4da6191bda5437b
 })
 
 server_scripts({
