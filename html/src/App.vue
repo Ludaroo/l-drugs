@@ -36,5 +36,5 @@ if (currentIndex > sites.length - 1) {
 
 <!-- here we make the Index visible if displayUI.Index is == true -->
 <template>
-  <Index></Index> 
+  <Index v-if="displayUI.index.value"></Index> 
 </template>
