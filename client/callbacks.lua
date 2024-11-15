@@ -29,3 +29,19 @@ function callback_getPlayerTolerance(drugId)
     end
     return result
 end
+
+function callback_editDrug(name, description, effect_type, default_effect_params, max_duration, default_value)
+    local result = lib.callback.await('l-drugs:editDrug', false, name, description, effect_type, default_effect_params, max_duration, default_value)
+    if result == nil and result[2] ~= nil then
+        error("Failed to edit drug: " .. result[2])
+    end
+    return result
+end
+
+function callback_getDrugData(drugname)
+    local result = lib.callback.await('l-drugs:getDrugData', false, drugname)
+    if result == nil and result[2] ~= nil then
+        error("Failed to get drug data: " .. result[2])
+    end
+    return result
+end

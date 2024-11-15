@@ -1,4 +1,6 @@
 
+-- Get all drugs from the database
+-- @return table - a table containing all the drugs
 function sql_getDrugs()
     local promise = MySQL.Async.fetchAll('SELECT * FROM drugs', {})
     return init_handlePromise(promise):next(function(drugs, err)
@@ -20,6 +22,9 @@ function sql_getDrugs()
     end)
 end
 
+-- Get the drug id by name
+-- @param name - the name of the drug
+-- @return int - the id of the drug
 function sql_getdrugIdByName(name)
     local promise = MySQL.Async.fetchAll('SELECT * FROM drugs WHERE name = @name', {
         ['@name'] = name
@@ -33,6 +38,14 @@ function sql_getdrugIdByName(name)
     end)
 end
 
+-- Add a new drug to the database
+-- @param  string name - the name of the drug
+-- @param string description - the description of the drug
+-- @param json effect_type - the effect type of the drug
+-- @param json default_effect_params - the default effect parameters of the drug
+-- @param int max_duration - the maximum duration of the drug
+-- @param int default_value - the default value of the drug
+-- @return boolean - true if the query was successful
 function sql_addDrug(name, description, effect_type, default_effect_params, max_duration, default_value)
     local promise = MySQL.Async.execute('INSERT INTO drugs (name, description, effect_type, default_effect_params, max_duration, default_value) VALUES (@name, @description, @effect_type, @default_effect_params, @max_duration, @default_value)', {
         ['@name'] = name,
@@ -48,6 +61,9 @@ function sql_addDrug(name, description, effect_type, default_effect_params, max_
     end)
 end
 
+-- Remove a drug from the database
+-- @param string name - the name of the drug
+-- @return boolean - true if the query was successful
 function sql_removeDrug(name)
     local promise = MySQL.Async.execute('DELETE FROM drugs WHERE name = @name', {
         ['@name'] = name
@@ -58,6 +74,14 @@ function sql_removeDrug(name)
     end)
 end
 
+-- Edit a drug in the database
+-- @param string name - the name of the drug
+-- @param string description - the description of the drug
+-- @param json effect_type - the effect type of the drug
+-- @param json default_effect_params - the default effect parameters of the drug
+-- @param int max_duration - the maximum duration of the drug
+-- @param int default_value - the default value of the drug
+-- @return boolean - true if the query was successful
 function sql_editDrug(name, description, effect_type, default_effect_params, max_duration, default_value)
     local promise = MySQL.Async.fetchAll('SELECT * FROM drugs WHERE name = @name', {
         ['@name'] = name
@@ -96,5 +120,36 @@ function sql_editDrug(name, description, effect_type, default_effect_params, max
             end
         end
         return true, nil
+    end)
+end
+
+
+
+-- Get the drug data by name
+-- @param string name - the name of the drug
+-- @return table - a table containing the drug data
+function sql_drug_get_data(name)
+
+    if type(name) == "number" then 
+        name = sql_getdrugNameById(name)
+    end
+    local promise = MySQL.Async.fetchAll('SELECT * FROM drugs WHERE name = @name', {
+        ['@name'] = name
+    })
+    return init_handlePromise(promise):next(function(drug, err)
+        if err then return nil, err end
+        if drug[1] then
+            return {
+                id = drug[1].id,
+                name = drug[1].name,
+                description = drug[1].description,
+                effect_type = drug[1].effect_type,
+                default_effect_params = json.decode(drug[1].default_effect_params),
+                max_duration = drug[1].max_duration,
+                default_value = drug[1].default_value
+            }
+        else
+            return false
+        end
     end)
 end

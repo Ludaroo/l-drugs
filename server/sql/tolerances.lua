@@ -112,3 +112,26 @@ function sql_inserttolerance(identifier, drugid, tolerance)
     end
     return true
 end
+-- gets the default tolerance for a drug
+-- @param drugid - the id of the drug
+-- @return int - the default tolerance
+function sql_getdefaulttolerance(drugid)
+    if type(drugid) == 'string' then
+        drugid = sql_getdrugIdByName(drugid)
+    end
+    if not drugid then 
+        return nil, "Invalid drugid"
+    end
+    local promise = MySQL.Async.fetchAll('SELECT default_value FROM drugs WHERE id = @drug_id', {
+        ['@drug_id'] = drugid
+    })
+    local data, err = init_handlePromise(promise)
+    if err then
+        return nil, err
+    end
+    if data[1] then
+        return data[1].default_value
+    else
+        return false
+    end
+end

@@ -6,6 +6,12 @@ lib.callback.register('l-drugs:addDrug', function(source, name, description, eff
     return sql_addDrug(name, description, effect_type, default_effect_params, max_duration, default_value)
 end)
 
+
+lib.callback.register('l-drugs:editDrug', function(source, name, description, effect_type, default_effect_params, max_duration, default_value)
+    return sql_editDrug(name, description, effect_type, default_effect_params, max_duration, default_value)
+end)
+
+
 lib.callback.register('l-drugs:removeDrug', function(source, name)
     return sql_removeDrug(name)
 end)
@@ -51,3 +57,6 @@ lib.callback.register('l-drugs:getPlayerToleranceAll', function(source)
     return sql_getPlayerToleranceAll(playerIdentifier)
 end)
 
+lib.callback.register('l-drugs:getDrugData', function(source, drugId)
+    return sql_drug_get_data(drugId)
+end)
