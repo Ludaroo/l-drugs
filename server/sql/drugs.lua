@@ -1,6 +1,7 @@
 
-function sql_getDrugs(    local promise = MySQL.Async.fetchAll('SELECT * FROM drugs', {})
-    return handlePromise(promise):next(function(drugs, err)
+function sql_getDrugs()
+    local promise = MySQL.Async.fetchAll('SELECT * FROM drugs', {})
+    return init_handlePromise(promise):next(function(drugs, err)
         if err then return nil, err end
         local drugList = {}
         for i = 1, #drugs do
@@ -23,7 +24,7 @@ function sql_getdrugIdByName(name)
     local promise = MySQL.Async.fetchAll('SELECT * FROM drugs WHERE name = @name', {
         ['@name'] = name
     })
-    return handlePromise(promise):next(function(drug)
+    return init_handlePromise(promise):next(function(drug)
         if drug[1] then
             return drug[1].id
         else
@@ -41,7 +42,7 @@ function sql_addDrug(name, description, effect_type, default_effect_params, max_
         ['@max_duration'] = max_duration,
         ['@default_value'] = default_value
     })
-    return handlePromise(promise):next(function(_, err)
+    return init_handlePromise(promise):next(function(_, err)
         if err then return nil, err end
         return true, nil
     end)
@@ -51,7 +52,7 @@ function sql_removeDrug(name)
     local promise = MySQL.Async.execute('DELETE FROM drugs WHERE name = @name', {
         ['@name'] = name
     })
-    return handlePromise(promise):next(function(_, err)
+    return init_handlePromise(promise):next(function(_, err)
         if err then return nil, err end
         return true, nil
     end)
@@ -61,7 +62,7 @@ function sql_editDrug(name, description, effect_type, default_effect_params, max
     local promise = MySQL.Async.fetchAll('SELECT * FROM drugs WHERE name = @name', {
         ['@name'] = name
     })
-    return handlePromise(promise):next(function(currentDrug, err)
+    return init_handlePromise(promise):next(function(currentDrug, err)
         if err then return nil, err end
         if currentDrug[1] then
             local drug = currentDrug[1]
@@ -88,7 +89,7 @@ function sql_editDrug(name, description, effect_type, default_effect_params, max
                     ['@max_duration'] = max_duration,
                     ['@default_value'] = default_value
                 })
-                return handlePromise(updatePromise):next(function(_, err)
+                return init_handlePromise(updatePromise):next(function(_, err)
                     if err then return nil, err end
                     return true, nil
                 end)

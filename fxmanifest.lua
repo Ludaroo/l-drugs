@@ -1,42 +1,38 @@
-fx_version("cerulean")
-game("gta5")
-lua54("yes")
+fx_version('cerulean')
+game('gta5')
+lua54('yes')
 
-author("Ludaro & Emma")
-version("1.0.0")
+author('Ludaro & Emma')
+version('1.0.0')
 
 client_scripts({
-<<<<<<< HEAD
 	'client/init.lua',
-	"client/*.lua"
-=======
-    "client/init.lua",
-    "client/*.lua"
->>>>>>> 6738e8d3d45ebfd4600e9bb4a4da6191bda5437b
+	'client/**/*',
 })
 
 server_scripts({
-    "@oxmysql/lib/MySQL.lua",
-    "server/*.lua"
+    '@oxmysql/lib/MySQL.lua',
+    'server/init.lua',
+    'server/**/*'
 })
 
 shared_scripts({
-    "shared/*.lua",
-    "@ox_lib/init.lua",
-    "config/*.lua"
+    'shared/*.lua',
+    '@ox_lib/init.lua',
+    'config/*.lua'
 })
 
 ui_page({
-    "html/dist/index.html",
+    'html/dist/index.html',
 })
 
 dependencies {
-    "ox_lib",
-    "oxmysql",
-    "es_extended"
+    'ox_lib',
+    'oxmysql',
+    'es_extended'
 }
 
 files({
-    "locales/*.json",
-    "html/dist/**"
+    'locales/*.json',
+    'html/dist/**'
 })

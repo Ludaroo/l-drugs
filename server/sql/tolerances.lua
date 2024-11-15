@@ -1,5 +1,5 @@
 -- handles promise results
-function handlePromise(promise)
+function init_handlePromise(promise)
     return promise:next(function(result)
         return result
     end, function(err)
@@ -18,11 +18,11 @@ function sql_gettolerancedata(identifier, drugid)
     if not drugid or not identifier then 
         return nil, "Invalid drugid or identifier"
     end
-    local promise = MySQL.Async.fetchAll('SELECT * FROM player_tolerances WHERE player_id = @player_id AND drug_id = @drug_id', {
-        ['@player_id'] = identifier,
+    local promise = MySQL.Async.fetchAll('SELECT * FROM player_tolerances WHERE identifier = @identifier AND drug_id = @drug_id', {
+        ['@identifier'] = identifier,
         ['@drug_id'] = drugid
     })
-    local data, err = handlePromise(promise)
+    local data, err = init_handlePromise(promise)
     if err then
         return nil, err
     end
@@ -36,10 +36,10 @@ end
 -- gets the tolerancedata for a player with all drugs
 -- @param identifier - the player's identifier
 function sql_gettolerancedataall(identifier)
-    local promise = MySQL.Async.fetchAll('SELECT * FROM player_tolerances WHERE player_id = @player_id', {
-        ['@player_id'] = identifier
+    local promise = MySQL.Async.fetchAll('SELECT * FROM player_tolerances WHERE identifier = @identifier', {
+        ['@identifier'] = identifier
     })
-    local data, err = handlePromise(promise)
+    local data, err = init_handlePromise(promise)
     if err then
         return nil, err
     end
@@ -57,12 +57,12 @@ function sql_updatetolerance(identifier, drugid, tolerance)
     if not drugid or not identifier then 
         return nil, "Invalid drugid or identifier"
     end
-    local promise = MySQL.Async.execute('UPDATE player_tolerances SET tolerance_level = @tolerance WHERE player_id = @player_id AND drug_id = @drug_id', {
-        ['@player_id'] = identifier,
+    local promise = MySQL.Async.execute('UPDATE player_tolerances SET tolerance_level = @tolerance WHERE identifier = @identifier AND drug_id = @drug_id', {
+        ['@identifier'] = identifier,
         ['@drug_id'] = drugid,
         ['@tolerance'] = tolerance
     })
-    local result, err = handlePromise(promise)
+    local result, err = init_handlePromise(promise)
     if err then
         return nil, err
     end
@@ -79,11 +79,11 @@ function sql_updatelastused(identifier, drugid)
     if not drugid or not identifier then 
         return nil, "Invalid drugid or identifier"
     end
-    local promise = MySQL.Async.execute('UPDATE player_tolerances SET last_used = CURRENT_TIMESTAMP WHERE player_id = @player_id AND drug_id = @drug_id', {
-        ['@player_id'] = identifier,
+    local promise = MySQL.Async.execute('UPDATE player_tolerances SET last_used = CURRENT_TIMESTAMP WHERE identifier = @identifier AND drug_id = @drug_id', {
+        ['@identifier'] = identifier,
         ['@drug_id'] = drugid
     })
-    local result, err = handlePromise(promise)
+    local result, err = init_handlePromise(promise)
     if err then
         return nil, err
     end
@@ -101,12 +101,12 @@ function sql_inserttolerance(identifier, drugid, tolerance)
     if not drugid or not identifier then 
         return nil, "Invalid drugid or identifier"
     end
-    local promise = MySQL.Async.execute('INSERT INTO player_tolerances (player_id, drug_id, tolerance_level, last_used) VALUES (@player_id, @drug_id, @tolerance, CURRENT_TIMESTAMP)', {
-        ['@player_id'] = identifier,
+    local promise = MySQL.Async.execute('INSERT INTO player_tolerances (identifier, drug_id, tolerance_level, last_used) VALUES (@identifier, @drug_id, @tolerance, CURRENT_TIMESTAMP)', {
+        ['@identifier'] = identifier,
         ['@drug_id'] = drugid,
         ['@tolerance'] = tolerance
     })
-    local result, err = handlePromise(promise)
+    local result, err = init_handlePromise(promise)
     if err then
         return nil, err
     end
