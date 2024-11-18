@@ -7,11 +7,8 @@ version('1.0.0')
 
 client_scripts({
 	'client/init.lua',
-<<<<<<< HEAD
 	'client/**/*',
-=======
 	"client/*.lua"
->>>>>>> e9a6e6a9dc4c0ce10a1ec022043ff3162c4510a5
 })
 
 server_scripts({
