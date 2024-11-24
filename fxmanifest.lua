@@ -7,8 +7,8 @@ version('1.0.0')
 
 client_scripts({
 	'client/init.lua',
-	'client/**/*',
-})
+    "client/*.lua"
+})	
 
 server_scripts({
     '@oxmysql/lib/MySQL.lua',
