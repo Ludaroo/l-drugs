@@ -54,7 +54,7 @@ RegisterNUICallback('updatePlayerTolerance', function(data, cb)
     cb(json.encode(callback_updatePlayerTolerance(data.drugId, data.tolerance)))
 end)
 
-RegisterNUICallback('getEffects', function(data, cb)
+RegisterNUICallback('getEffects', function(cb)
     EffectsTable = {}
     for k,v in pairs(Effects) do
         EffectsTable[k] = {

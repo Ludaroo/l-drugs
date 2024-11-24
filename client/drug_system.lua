@@ -11,6 +11,9 @@ end
 
 Drug = {
     start = function(drugName, customData)
+
+        -- DrugData for now is a global variable that contains all the drug data later it will be saved in database
+        
         -- Fetch default drug data
         local defaultData = DrugData[drugName]
         if not defaultData then
