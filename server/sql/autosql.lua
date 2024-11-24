@@ -20,8 +20,21 @@ CREATE TABLE IF NOT EXISTS `drugs` (
     FOREIGN KEY (`drug_id`) REFERENCES `drugs`(`id`) ON DELETE CASCADE
 );
     ]]
+
+
+    local query3 = [[
+        CREATE TABLE IF NOT EXISTS `player_drugs` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `identifier` VARCHAR(50) NOT NULL,
+            `drug_id` INT NOT NULL,
+            `timer` INT DEFAULT 0,
+            FOREIGN KEY (`drug_id`) REFERENCES `drugs`(`id`) ON DELETE CASCADE
+        );
+    ]]
+    
     MySQL.query(query2)
     MySQL.query(query1)
+    MySQL.query(query3)
     return true
 end
 
@@ -29,7 +42,7 @@ function doesSQLTablesExist(callback)
     local query = [[
         SELECT COUNT(*) as count 
         FROM information_schema.tables 
-        WHERE table_name IN ('drugs', 'player_tolerances');
+        WHERE table_name IN ('drugs', 'player_tolerances', 'player_drugs');
     ]]
     MySQL.query(query, {}, function(result)
         if result and result[1] and result[1].count and tonumber(result[1].count) == 2 then

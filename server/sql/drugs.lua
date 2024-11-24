@@ -124,7 +124,6 @@ function sql_editDrug(name, description, effect_type, default_effect_params, max
 end
 
 
-
 -- Get the drug data by name
 -- @param string name - the name of the drug
 -- @return table - a table containing the drug data
