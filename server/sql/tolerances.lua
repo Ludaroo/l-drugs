@@ -6,7 +6,7 @@ end, "Couldn't fetch effects for timers in /server/effects/timers", 1000)
 
 local effectTimers = {}
 
-function startTimer(source, drugId, tickInterval)
+function effects_startTimers(source, drugId, tickInterval)
     sql_playerdrugs_getTimer(source, drugId):next(function(existingTimer, err)
         if err then return print(("Error fetching timer: %s"):format(err)) end
 
@@ -30,7 +30,7 @@ function startTimer(source, drugId, tickInterval)
 
                 sql_playerdrugs_getTimer(source, drugId):next(function(updatedTimer)
                     if updatedTimer <= 0 then
-                        stopTimer(source, drugId)
+                        effects_stopTimers(source, drugId)
                     end
                 end)
             end, true)
@@ -43,7 +43,7 @@ function startTimer(source, drugId, tickInterval)
     end)
 end
 
-function stopTimer(source, drugId)
+function effects_stopTimers(source, drugId)
     if effectTimers[drugId] and effectTimers[drugId][source] then
         effectTimers[drugId][source]:forceEnd(false)
         effectTimers[drugId][source] = nil
@@ -60,24 +60,24 @@ function stopTimer(source, drugId)
     end
 end
 
-function startTimers(players)
+function effects_startTimers(players)
     if not players then return end
     effects = effects_getEffects()
 
     for effectName, effectData in pairs(effects) do
         if effectData.server then
             for _, playerId in pairs(players) do
-                startTimer(playerId, effectName, effectData.server.defaultTick.interval or 1000)
+                effects_startTimers(playerId, effectName, effectData.server.defaultTick.interval or 1000)
             end
         end
     end
     
 end
 
-function stopTimers()
+function effects_stopTimers()
     for drugId, playerTimers in pairs(effectTimers) do
         for playerId, _ in pairs(playerTimers) do
-            stopTimer(playerId, drugId)
+            effects_stopTimers(playerId, drugId)
         end
     end
     effectTimers = {}
@@ -86,10 +86,10 @@ end
 AddEventHandler("onResourceStart", function(resourceName)
     if GetCurrentResourceName() ~= resourceName then return end
     local players = ESX.GetExtendedPlayers()
-    startTimers(players)
+    effects_startTimers(players)
 end)
 
 AddEventHandler("onResourceStop", function(resourceName)
     if GetCurrentResourceName() ~= resourceName then return end
-    stopTimers()
+    effects_stopTimers()
 end)

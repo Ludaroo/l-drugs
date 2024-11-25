@@ -1,5 +1,3 @@
--- File: client/timers.lua
-
 local effectTimers = {}
 
 -- Start a client-side timer for a drug
@@ -7,7 +5,7 @@ local effectTimers = {}
 -- @int tickInterval Interval for the timer in milliseconds
 -- @float tolerance Tolerance level of the player
 -- @return void
-function startClientTimer(drugId, tickInterval, tolerance)
+function effects_startClientTimer(drugId, tickInterval, tolerance)
     local effect = effects[drugId]
     if not effect or not effect.client then return end
     if effect.client.defaultTick then
@@ -24,7 +22,7 @@ end
 -- Stop a client-side timer for a drug
 -- @string drugId Drug ID
 -- @return void
-function stopClientTimer(drugId)
+function effects_stopClientTimer(drugId)
     local effect = effects[drugId]
     if not effect or not effect.client then return end
     if effectTimers[drugId] and effectTimers[drugId].defaultTick then
@@ -37,9 +35,9 @@ function stopClientTimer(drugId)
 end
 
 RegisterNetEvent("l-drugs:startClientTimer", function(drugId, tickInterval, tolerance)
-    startClientTimer(drugId, tickInterval, tolerance)
+    effects_startClientTimer(drugId, tickInterval, tolerance)
 end)
 
 RegisterNetEvent("l-drugs:stopClientTimer", function(drugId)
-    stopClientTimer(drugId)
+    effects_stopClientTimer(drugId)
 end)
