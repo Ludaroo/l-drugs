@@ -1,97 +1,132 @@
-local value = lib.waitFor(function()
-    if effects ~= nil then
-        return effects
+-- File: server/timers.lua
+
+local effectTimers = {}
+
+-- Start a timer for a specific drug and player
+-- @int source Player ID
+-- @int drugId Drug ID
+-- @int tickInterval Interval for the timer in milliseconds
+-- @return void
+function startTimer(source, drugId, tickInterval)
+    sql_playerdrugs_doesDrugExist(source, drugId):next(function(exists, err)
+        if err or not exists then return end
+        sql_gettolerancedata(framework_getPlayerIdentifier(source, 0), drugId):next(function(toleranceData)
+            local tolerance = toleranceData and toleranceData.tolerance_level or 0
+            if effectTimers[drugId] and effectTimers[drugId][source] then
+                local currentTimer = effectTimers[drugId][source]
+                local currentTimeLeft = currentTimer:getTimeLeft("ms") or 0
+                local newTime = currentTimeLeft + tickInterval
+                currentTimer:setTime(newTime)
+                sql_playerdrugs_addToTimer(source, drugId, tickInterval)
+                TriggerClientEvent("l-drugs:startClientTimer", source, drugId, tickInterval, tolerance)
+                return
+            end
+            local timerValue = tickInterval
+            sql_playerdrugs_getTimer(source, drugId):next(function(existingTimer)
+                if existingTimer then
+                    timerValue = existingTimer
+                else
+                    sql_playerdrugs_setTimer(source, drugId, timerValue)
+                end
+                TriggerClientEvent("l-drugs:startClientTimer", source, drugId, timerValue, tolerance)
+                if not effectTimers[drugId] then effectTimers[drugId] = {} end
+                effectTimers[drugId][source] = { timerValue = timerValue }
+            end)
+        end)
+    end)
+end
+
+-- Stop a timer for a specific drug and player
+-- @int source Player ID
+-- @int drugId Drug ID
+-- @return void
+function stopTimer(source, drugId)
+    if effectTimers[drugId] and effectTimers[drugId][source] then
+        TriggerClientEvent("l-drugs:stopClientTimer", source, drugId)
+        effectTimers[drugId][source] = nil
+        sql_playerdrugs_getTimer(source, drugId):next(function(finalTimer)
+            if finalTimer <= 0 then
+                sql_playerdrugs_removeDrug(source, drugId)
+            else
+                sql_playerdrugs_setTimer(source, drugId, finalTimer)
+            end
+        end)
     end
-end, "Couldn't fetch effects for timers in /server/effects/timers", 1000)
+end
 
-local effectTimers = {}  -- Table to store timers per effect and player
+-- Start all timers for a player
+-- @int source Player ID
+-- @return void
+function startTimersForPlayer(source)
+    sql_playerdrugs_getDrugsFromPlayer(source):next(function(drugs, err)
+        if err or not drugs then return end
+        for _, drug in ipairs(drugs) do
+            startTimer(source, drug.drug_id, effects[drug.drug_id].server.defaultTick.interval or 1000)
+        end
+    end)
+end
 
--- Function to start timers for all effects for all players
+-- Start timers for all players
+-- @table players List of Player IDs
+-- @return void
 function startTimers(players)
-    if players == nil then return end
+    if not players then return end
     effects = effects_getEffects()
-    for effectName, effectData in pairs(effects) do
-        if effectData.server then
-            -- Start default tick timer if defined
-            if effectData.server.defaultTick and effectData.server.defaultTick.action then
-                for _, playerId in pairs(players) do
-
-                    
-                    local tickTime = effectData.server.defaultTick.interval or 1000
-                    local timer = lib.timer(tickTime, function()
-                        effectData.server.defaultTick.action({source = playerId}) -- Pass player-specific source
-                    end, true)
-
-                    if not effectTimers[effectName] then
-                        effectTimers[effectName] = {}
-                    end
-
-                    if not effectTimers[effectName].default then
-                        effectTimers[effectName].default = {}
-                    end
-
-                    effectTimers[effectName].default[playerId] = timer
-                    timer:play()
-                    print(("Started default timer for effect '%s' on player ID %d."):format(effectName, playerId))
-                end
-            end
-
-            -- Start custom tick timers if defined
-            if effectData.server.customTicks then
-                for customTickName, customTickData in pairs(effectData.server.customTicks) do
-                    for _, playerId in pairs(players) do
-                        local tickTime = customTickData.interval or 1000
-                        local timer = lib.timer(tickTime, function()
-                            customTickData.action({source = playerId}) -- Pass player-specific source
-                        end, true)
-
-                        if not effectTimers[effectName] then
-                            effectTimers[effectName] = {}
-                        end
-
-                        if not effectTimers[effectName].custom then
-                            effectTimers[effectName].custom = {}
-                        end
-
-                        if not effectTimers[effectName].custom[customTickName] then
-                            effectTimers[effectName].custom[customTickName] = {}
-                        end
-
-                        effectTimers[effectName].custom[customTickName][playerId] = timer
-                        timer:play()
-                        print(("Started custom timer '%s' for effect '%s' on player ID %d."):format(customTickName, effectName, playerId))
-                    end
-                end
-            end
+    for _, playerId in pairs(players) do
+        if ESX.GetPlayerFromId(playerId) then
+            startTimersForPlayer(playerId)
         end
     end
 end
 
--- Function to stop all timers for all effects and players
+-- Stop all timers for all players
+-- @return void
 function stopTimers()
-    for effectName, playerTimers in pairs(effectTimers) do
-        -- Stop default timers
-        if playerTimers.default then
-            for playerId, timer in pairs(playerTimers.default) do
-                timer:forceEnd(false)
-                print(("Stopped default timer for effect '%s' on player ID %d."):format(effectName, playerId))
-            end
-            playerTimers.default = nil
+    for drugId, playerTimers in pairs(effectTimers) do
+        for playerId, _ in pairs(playerTimers) do
+            stopTimer(playerId, drugId)
         end
-
-        -- Stop custom timers
-        if playerTimers.custom then
-            for customTickName, customTimers in pairs(playerTimers.custom) do
-                for playerId, timer in pairs(customTimers) do
-                    timer:forceEnd(false)
-                    print(("Stopped custom timer '%s' for effect '%s' on player ID %d."):format(customTickName, effectName, playerId))
-                end
-                playerTimers.custom[customTickName] = nil
-            end
-            playerTimers.custom = nil
-        end
-        effectTimers[effectName] = nil
     end
+    effectTimers = {}
 end
 
+-- Allow a player to take a drug
+-- @int source Player ID
+-- @int drugId Drug ID
+-- @int tickInterval Interval for the timer in milliseconds
+-- @return void
+function takeDrug(source, drugId, tickInterval)
+    sql_playerdrugs_doesDrugExist(source, drugId):next(function(exists, err)
+        if err then return end
+        if not exists then
+            sql_playerdrugs_addDrug(source, drugId):next(function(success, err)
+                if success then
+                    startTimer(source, drugId, tickInterval)
+                end
+            end)
+        else
+            startTimer(source, drugId, tickInterval)
+        end
+    end)
+end
 
+AddEventHandler("onResourceStart", function(resourceName)
+    if GetCurrentResourceName() ~= resourceName then return end
+    local players = GetPlayers()
+    startTimers(players)
+end)
+
+AddEventHandler("onResourceStop", function(resourceName)
+    if GetCurrentResourceName() ~= resourceName then return end
+    stopTimers()
+end)
+
+AddEventHandler("esx:playerLoaded", function(playerId)
+    startTimersForPlayer(playerId)
+end)
+
+AddEventHandler("esx:playerDropped", function(playerId)
+    for drugId, _ in pairs(effectTimers) do
+        stopTimer(playerId, drugId)
+    end
+end)

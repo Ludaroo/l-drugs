@@ -118,9 +118,6 @@ effects_init_refreshEffects = effects_init_getEffects(true)
 AddEventHandler('onResourceStart', function(resourceName)
     if (GetCurrentResourceName() == resourceName) then
         effects_init_getEffects()
-
-        -- -- Start timers for all effects
-        -- startTimers()
     end
   end)
   

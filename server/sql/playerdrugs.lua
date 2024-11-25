@@ -93,7 +93,7 @@ function sql_playerdrugs_doesDrugExist(source, drugId)
 end
 
 
-functgion sql_playerdrugs_addToTimer(source, drugId, time)
+function sql_playerdrugs_addToTimer(source, drugId, time)
     local promise = MySQL.Async.fetchAll('SELECT timer FROM player_drugs WHERE identifier = @identifier AND drug_id = @drug_id', {
         ['@identifier'] = framework_getPlayerIdentifier(source, 0),
         ['@drug_id'] = drugId
